@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const redis = require('redis');
-const client = redis.createClient();
+import { Router } from 'express';
+const router = Router();
+import { createClient } from 'redis';
+const client = createClient();
 
 // Connectez-vous à Redis
 client.connect().catch(console.error);
@@ -62,7 +62,8 @@ router.put('/books/:id', async (req, res) => {
     }
  
     // Mettre à jour les informations du livre dans Redis
-    await client.set(bookKey, JSON.stringify(updatedBookData));  // Remplacer les anciennes données par les nouvelles
+    await client.hSet(bookKey, 'title', updatedBookData.title, 'author', updatedBookData.author, 'year', updatedBookData.year, 'genre', updatedBookData.genre, 'status', updatedBookData.status);
+    //await client.hSet(bookKey, JSON.stringify(updatedBookData));  // Remplacer les anciennes données par les nouvelles
     res.status(200).json({ message: "Livre mis à jour avec succès", book: updatedBookData });
   } catch (error) {
     console.error("Erreur lors de la mise à jour du livre :", error);
@@ -118,4 +119,4 @@ router.get('/books/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

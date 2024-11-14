@@ -1,14 +1,14 @@
-const express = require('express');
-const { redisClient, connectRedis } = require('./config/redisConfig');
+import express, { json } from 'express';
+import { redisClient, connectRedis } from './config/redisConfig';
 
 const app = express();
 const port = 3000;
 
 // Middleware pour traiter les données JSON
-app.use(express.json());
+app.use(json());
 
 // Routes
-const routes = require('./routes');
+import routes from './routes';
 app.use('/api', routes);
 
 // Lancement du serveur
