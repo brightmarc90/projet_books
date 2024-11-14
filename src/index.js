@@ -8,7 +8,6 @@ app.use(express.json());
 // Routes
 const routes = require('./routes');
 app.use('/api', routes);
-app.use('/books', booksRouter);
 
 // Lancement du serveur
 app.listen(port, () => {

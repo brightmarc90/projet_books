@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 // Route deleteBooks pour supprimer un livre
-router.delete('/deleteBooks/:id', async (req, res) => {
+router.delete('/books/:id', async (req, res) => {
   const bookId = req.params.id;
   const bookKey = `book:${bookId}`;
 
