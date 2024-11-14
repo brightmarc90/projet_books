@@ -49,4 +49,25 @@ router.post('/books', async (req, res) => {
   }
 });
 
+router.put('/books/:id', async (req, res) => {
+  const bookId = req.params.id;
+  const bookKey = `book:${bookId}`;
+  const updatedBookData = req.body;  // Les nouvelles données du livre envoyées dans le corps de la requête
+ 
+  try {
+    // Vérifiez si le livre existe dans Redis
+    const exists = await client.exists(bookKey);
+    if (!exists) {
+      return res.status(404).json({ message: "Livre non trouvé" });
+    }
+ 
+    // Mettre à jour les informations du livre dans Redis
+    await client.set(bookKey, JSON.stringify(updatedBookData));  // Remplacer les anciennes données par les nouvelles
+    res.status(200).json({ message: "Livre mis à jour avec succès", book: updatedBookData });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du livre :", error);
+    res.status(500).json({ message: "Erreur serveur lors de la mise à jour du livre" });
+  }
+});
+
 module.exports = router;
