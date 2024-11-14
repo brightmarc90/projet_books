@@ -29,4 +29,24 @@ router.delete('/books/:id', async (req, res) => {
   }
 });
 
+// Route pour ajouter un livre avec id, title, author, year, genre, statut
+router.post('/books', async (req, res) => {
+  const { id, title, author, year, genre, status } = req.body;
+
+  if (!id || !title || !author || !year || !genre || !status) {
+    return res.status(400).json({ message: "Toutes les informations du livre doivent être fournies" });
+  }
+
+  const bookKey = `book:${id}`;
+
+  try {
+    // Ajouter un livre avec plusieurs champs dans Redis
+    await client.hSet(bookKey, 'title', title, 'author', author, 'year', year, 'genre', genre, 'status', status);
+    res.status(201).json({ message: "Livre ajouté avec succès", book: { id, title, author, year, genre, status } });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du livre :", error);
+    res.status(500).json({ message: "Erreur serveur lors de l'ajout du livre" });
+  }
+});
+
 module.exports = router;
