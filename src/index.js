@@ -1,5 +1,6 @@
 import express, { json } from 'express';
-import { redisClient, connectRedis } from './config/redisConfig';
+import { connectRedis } from './config/redisConfig.js';
+import routes from './routes/index.js';
 
 const app = express();
 const port = 3000;
@@ -8,7 +9,7 @@ const port = 3000;
 app.use(json());
 
 // Routes
-import routes from './routes';
+
 app.use('/api', routes);
 
 // Lancement du serveur
