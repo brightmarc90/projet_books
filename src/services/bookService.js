@@ -24,16 +24,48 @@ export async function getBookById(bookId) {
 export async function addBook(book) {
   const { id, title, author, year, genre, status } = book;
   const bookKey = `book:${id}`;
-  await client.hSet(bookKey, 'title', title, 'author', author, 'year', year, 'genre', genre, 'status', status);
+ 
+  // Vérification si toutes les données nécessaires sont présentes
+  if (!id || !title || !author || !year || !genre || !status) {
+    throw new Error("Données du livre incomplètes.");
+  }
+ 
+  // Ajouter les données dans Redis
+  //await client.hSet(bookKey, 'title', title, 'author', author, 'year', year, 'genre', genre, 'status', status);
+  await client.hSet(bookKey, [
+    ['title', title],
+    ['author', author],
+    ['year', year],
+    ['genre', genre],
+    ['status', status]
+  ]);
   return book;
 }
 
 export async function updateBook(bookId, updatedBook) {
   const bookKey = `book:${bookId}`;
+ 
+  // Vérifier si le livre existe
   const exists = await client.exists(bookKey);
   if (!exists) return null;
-  await client.hSet(bookKey, ...Object.entries(updatedBook).flat());
-  return { id: bookId, ...updatedBook };
+ 
+  // Récupérer les données actuelles du livre
+  const currentBook = await client.hGetAll(bookKey);
+ 
+  // Fusionner les données actuelles avec les nouvelles données
+  const updatedData = { ...currentBook, ...updatedBook };
+ 
+  // Mettre à jour seulement les champs spécifiés
+  await client.hSet(bookKey, [
+    ['title', updatedData?.title],
+    ['author', updatedData?.author],
+    ['year', updatedData?.year],
+    ['genre', updatedData?.genre],
+    ['status', updatedData?.status]
+  ]);
+ 
+  // Retourner les données mises à jour
+  return { id: bookId, ...updatedData };
 }
 
 export async function deleteBook(bookId) {

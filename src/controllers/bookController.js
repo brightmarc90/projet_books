@@ -27,13 +27,13 @@ export async function getBookById(req, res) {
 }
 
 export async function addBook(req, res) {
-  try {
-    const book = await bookService.addBook(req.body);
-    res.status(201).json({ message: "Livre ajouté avec succès", book });
-  } catch (error) {
-    console.error("Erreur lors de l'ajout du livre :", error);
-    res.status(500).json({ message: "Erreur serveur lors de l'ajout du livre" });
-  }
+    try {
+      const book = await bookService.addBook(req.body);
+      res.status(201).json({ message: "Livre ajouté avec succès", book });
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du livre :", error);
+      res.status(500).json({ message: "Erreur serveur lors de l'ajout du livre" });
+    }
 }
 
 export async function updateBook(req, res) {
