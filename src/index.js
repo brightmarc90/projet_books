@@ -1,15 +1,19 @@
-const express = require('express');
-const { redisClient, connectRedis } = require('./config/redisConfig');
+import express, { json } from 'express';
+import { connectRedis } from './config/redisConfig.js';
+import routes from './routes/index.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocs } from './config/swaggerConfig.js';
 
 const app = express();
 const port = 3000;
 
 // Middleware pour traiter les données JSON
-app.use(express.json());
+app.use(json());
 
 // Routes
-const routes = require('./routes');
+console.log(swaggerDocs)
 app.use('/api', routes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Lancement du serveur
 connectRedis().then(() => {
