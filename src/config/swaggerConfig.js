@@ -10,7 +10,7 @@ const swaggerOptions = {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: 'API de projet Books',
+        title: 'API du projet Books',
         version: '1.0.0',
         description: 'Une simple API de gestion de livres avec Express et Redis',
       },
